@@ -1,0 +1,3 @@
+[submodule "swingui"]
+	path = swingui
+	url = https://github.com/cuongnv126/swingui

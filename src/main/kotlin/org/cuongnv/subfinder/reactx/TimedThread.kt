@@ -1,13 +1,25 @@
 package org.cuongnv.subfinder.reactx
 
-import java.util.LinkedList
+import java.util.concurrent.ConcurrentLinkedDeque
 
-class TimedThread : Thread() {
+class TimedThread private constructor() : Thread() {
     companion object {
         const val SEQUENCE_TIME = 1000 / 60L
+
+        private var instance: TimedThread? = null
+        fun getInstance(): TimedThread {
+            if (instance == null || instance!!.isStopped) {
+                synchronized(TimedThread::class) {
+                    if (instance == null || instance!!.isStopped) {
+                        instance = TimedThread()
+                    }
+                }
+            }
+            return instance!!
+        }
     }
 
-    private val queue = LinkedList<TimedTask>()
+    private val queue = ConcurrentLinkedDeque<TimedTask>()
     private var isStopped = false
 
     init {
@@ -30,8 +42,8 @@ class TimedThread : Thread() {
 
     fun disposeAll() {
         val iterator = queue.iterator()
-        iterator.forEachRemaining {
-            it.isDisposed = true
+        while (iterator.hasNext()) {
+            iterator.next().isDisposed = true
             iterator.remove()
         }
     }
@@ -40,6 +52,15 @@ class TimedThread : Thread() {
         val timedTask = TimedTask(task, time)
         queue.add(timedTask)
         return timedTask.hashCode()
+    }
+
+    fun submit(task: Runnable): Int {
+        return submit(task, System.currentTimeMillis())
+    }
+
+    fun schedule(task: Runnable, spacingTime: Long): Int {
+        submit(task)
+        return submitDelay({ schedule(task, spacingTime) }, spacingTime)
     }
 
     fun submitDelay(task: Runnable, delay: Long): Int {

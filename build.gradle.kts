@@ -22,6 +22,7 @@ repositories {
 
 dependencies {
     implementation(project(":swingui"))
+    implementation(project(":trayicon"))
 
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("io.reactivex.rxjava3:rxkotlin:3.0.1")

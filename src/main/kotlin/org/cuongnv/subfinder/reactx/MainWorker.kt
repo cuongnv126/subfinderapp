@@ -6,15 +6,13 @@ import java.util.concurrent.TimeUnit
 import javax.swing.SwingUtilities
 
 class MainWorker : Scheduler.Worker() {
-    private val executor = TimedThread()
-
     @Volatile
     private var disposed = false
 
     override fun dispose() {
         if (!disposed) {
             disposed = true
-            executor.disposeAll()
+            TimedThread.getInstance().disposeAll()
         }
     }
 
@@ -22,7 +20,7 @@ class MainWorker : Scheduler.Worker() {
 
     override fun schedule(run: Runnable?, delay: Long, unit: TimeUnit): Disposable {
         return TimedDisposable(
-            id = executor.submitDelay(
+            id = TimedThread.getInstance().submitDelay(
                 {
                     if (!disposed) {
                         SwingUtilities.invokeLater(run)
@@ -30,7 +28,7 @@ class MainWorker : Scheduler.Worker() {
                 },
                 unit.convert(delay, TimeUnit.MILLISECONDS)
             ),
-            timedThread = executor
+            timedThread = TimedThread.getInstance()
         )
     }
 }

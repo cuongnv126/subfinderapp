@@ -9,7 +9,14 @@ Input your keyword, then search, after that, right click to subtitles you wanna 
 
 ![](/intro/home.png)
 
+## Snapshots:
+- [v1.0.0](https://github.com/cuongnv126/subfinderapp/tree/dock_support/macos/snapshot/v1.0.0) - Support menu bar for MacOS.
 
+### Run win snapshot by:
+Browse your command line workspace to snapshot folder, run command below.
+```zsh
+nohup java -jar subfinder.jar &
+```
 
 ## Future Update:
 `Sub Finder` in development phase, too much thing must update, if you have any ideas, please contribute with me.
